@@ -1,10 +1,12 @@
 **_本文参考来源：https://mp.weixin.qq.com/s/FnH-J_OBHPFjpG3ufo1e8g_**
 
 #1、湖仓一体架构演进
+
 ##1.1 概念
+
     数据仓库：将来自业务系统的多种结构化数据聚合到数据仓库中，利用 MPP 等大规模并发技术对企业的数据进行分析，支撑上层的商业分析和决策，主要处理结构化数据。
     数据湖：数据湖可以被定义为一种存储各类原始数据的存储库，原始数据包含结构化、半结构化以及非结构化数据。一部分原始数据会经过 ETL 同步到数据集市中，支撑商业分析和决策类应用，另一部分数据将被机器学习和数据科学类应用直接访问。
-    
+
 | 数据仓库                                            | 数据湖                                                                     |
 |-------------------------------------------------|-------------------------------------------------------------------------|
 | 主要处理历史的、结构化的数据，而且这些数据必须与数据仓库事先定义的模型吻合。          | 能处理所有类型的数据，如结构化数据，非结构化数据，半结构化数据等，数据的类型依赖于数据源系统的原始数据格式。非结构化数据（语音、图片、视频等） |
@@ -24,7 +26,7 @@
 
 ● 生态工具与组件丰富：围绕数据湖也出现了很多相关工具和组件，如数据目录、开发工具、隐私计算、元数据管理等，其中以 Hudi、Iceberg、DeltaLake 这三种数据湖存储格式最为流行。
 
-![湖仓一体技术演进.jpg](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\湖仓一体技术演进.jpg)
+![湖仓一体技术演进.jpg](images/湖仓一体技术演进.jpg)
 
 **湖仓一体的缺点：**对实时性支持不足。如果我们把数据湖和实时数仓进行融合，利用实时数仓的快速分析能力去查询数据湖中的海量数据，势必将会给企业带来更高的价值。
 
@@ -34,7 +36,7 @@
 
 ● 实时数仓：提供实时指标的聚合，数据可以秒级入库。实时数仓的分析能力也较强，支持秒级和亚秒级的数据分析，支持多维分析和联合分析。对外可以提供高并发数据服务，如 Doris 可以提供万级 QPS 的数据服务，也提供数据更新能力。
 
-![数据湖与实时数仓特点简介.jpg](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\数据湖与实时数仓特点简介.jpg) 
+![数据湖与实时数仓特点简介.jpg](images/数据湖与实时数仓特点简介.jpg)
 
     结合数据湖和Doris特性：
         既可以利用数据湖中存储的海量数据
@@ -43,9 +45,12 @@
 
 
 #2、数据湖联邦分析底层架构
+
 ##2.1 Multi-Catalog的架构设计
+
     数据湖联邦分析架构采用 multi-catalog模式，由外表的方式转为catalog的方式，如下所示：
-![Multi-catalog架构.png](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\Multi-catalog架构.png)
+
+![Multi-catalog架构.png](images/Multi-catalog架构.png)
 
 **初始架构：**
 
@@ -54,6 +59,7 @@
     基于 Doris 原生外表模式，也可以访问数据湖中的数据源，但存在如下缺点：
         ● 首先需要在 Doris 中创建外表，创建时还需要制定 Schema。如果外部数据源多，一个一个在 Doris 中进行创建就显得非常繁琐和不便。
         ● 如果外部数据源，如 Hive 中的 Schema 发生了变更，那 Doris 中对应的表就需要重建，否则查询就会失败。
+
 **架构改进：**
 
     针对以上问题，我们参考数据库的设计理念，增加了 Catalog 一层，将原有的 Database 和 Table 挂在 Internal Catalog 下，目前已经实现了 Hive Catalog、JDBC Catalog 和 ElasticSearch Catalog。
@@ -61,6 +67,7 @@
     在 Show Database 时查看的 Database，即 Hive Catalog 下的 Database，也就是 Hive Metastore 中的 Database 列表。我们在某个 DB 下 Show Table，也可以看到该 DB 下的 Table，同样和 Hive Metastore 保持一致，无需创建外表。其他类型的 Catalog 也类似。
 
 ##2.2 Multi-Catalog的元数据技术原理--和外部元数据的连接简介
+
 _以 Hive MetaStore举例,Catalog 与外部元数据对接_
 
 **设计思路:**
@@ -69,7 +76,9 @@ _以 Hive MetaStore举例,Catalog 与外部元数据对接_
     2、通过 Drop 和 Switch 命令也可以很容易地进行删除和切换。在 Doris 中无需创建外表，执行 Show Database 和 Table 的时候，FE 会连接至对应的 Hive MetaStore，来查询其中的 DB 和 Table。获取到 DB 和 Table 之后，再由 FE 返回客户端。
     3、当制定 Select 查询操作时，FE 会连接到 Hive MetaStore 来获取该 Table 下的元数据信息，包含它的 Schema、Location、格式等信息，完成查询规划，进而完成查询。
     4、对从 Hive MetaStore 中获取的元数据进行缓存，来加速查询。JDBC Catalog 和 ES Catalog 也是类似的方式，会分别连接到外部的 JDBC Server 和 ES Server 来进行元数据获取。
-![元数据架构.jpg](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\元数据架构.jpg)
+
+![元数据架构.jpg](images/元数据架构.jpg)
+
 **在这种统一的数据查询框架下,开发新数据源的方式：**
 
     1、当前我们已经内置提供了 Hive、JDBC、ES等数据源。添加新数据源时，只需关心数据源自身的访问相关操作，增加新的 ScanNode。例如，在 Hive、JDBC、ES 的设计中，分别内置了 FileScanNode、JDBCScanNode 和 ESScanNode。
@@ -81,16 +90,19 @@ _以 Hive MetaStore举例,Catalog 与外部元数据对接_
 
 ##2.3 Multi-Catalog的查询框架
 
-![Multi-Catalog数据查询架构.jpg](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\Multi-Catalog数据查询架构.jpg)
+![Multi-Catalog数据查询架构.jpg](images/Multi-Catalog数据查询架构.jpg)
+
 **查询的完整流程：**
+
 比如执行一个查询，Select * from Hive Catalog 中的 DB1 下的 Table1 的流程。
-    
+
     第一步，对于这样的查询，在 FE 中会首先连接到 Hive MetaStore ，获取 Table 相应的元数据。元数据中包含Schema 信息。
     第二步，如果分区表，也会获取相应的分区。如果过滤条件中包含分区过滤条件，也会将过滤条件传递到 Hive MetaStore 中，减少返回的分区大小。
     第三步，对返回的元数据信息进行分区裁剪和计划生成。分区裁剪完之后，我们会根据元数据信息链接到 HDFS 或 S3 中获取文件列表。获取到文件列表后，会进行计划生成，该生成逻辑和原有的逻辑类似。
     第四步，生成完之后，我们会对任务进行拆分和下发，下发到 BE 中执行。对于下发的任务，BE 会基于 FE 下发的信息，直连 HDFS 和 S3 进行文件读取，读取效率非常高。
 
-![查询流程.jpg](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\查询流程.jpg)
+![查询流程.jpg](images/查询流程.jpg)
+
 **字节跳动也对查询过程的优化：**
 
 **(1)FE 中缓存的相应元数据信息**
@@ -105,7 +117,7 @@ _以 Hive MetaStore举例,Catalog 与外部元数据对接_
     ● 第一， Prefetch Buffer 功能。在 BE 去查询 HDFS 和 S3 数据时，如 Parquet 或者 ORC 格式，会进行跳跃式读取。读完当前 Block ，读下一个 Block 时，我们会对 IO 做合并，一次读取多个 Block 信息，减少 RPC 调用。读取完数据，后续查询可以直接利用已读取的数据。
     ● 第二， 维护File Block Cache。读取完 Parquet 文件中数据后，我们会对 Block 数据进行本次缓存，下次再查询相同文件时，可以充分利用本地这份缓存，减少和远端存储系统交互，提高查询效率。
 
-![缓存管理.jpg](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\缓存管理.jpg)
+![缓存管理.jpg](images/缓存管理.jpg)
 
 **(3)对FileReader进行重构**
 
@@ -131,7 +143,7 @@ _以 Hive MetaStore举例,Catalog 与外部元数据对接_
 
 我们设置过滤条件只查询性别为男的数据，常规的读取方式会先把文件存储中的0和1数据用字典解码为性别男和女。然后，再将男和女的字符串和过滤条件进行比较，保留性别为男的数据。
 这种模式因为有字符串的参与，效率会非常低。在我们这次重构中对此进行了优化，在设置过滤条件时可以通过字典知道对应数据是0，所以查询中直接可以使用 0 这个 int 类型数据来进行读取和延迟物化，从而提供查询效率。
-![FileReader重构.jpg](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\FileReader重构.jpg)
+![FileReader重构.jpg](images/FileReader重构.jpg)
 
 **(4)Compute-Node计算节点**
 
@@ -139,17 +151,19 @@ _以 Hive MetaStore举例,Catalog 与外部元数据对接_
         原始的 Doris 中，BE 节点是存算一体的，提供 Local Storage 这种存储引擎，如 OLAP 表就存储在本地。但在数据湖联邦分析场景中，我们查询远端数据湖数据时是不需要 Local Storage 这种本地存储的，因为数据湖中数据量较大，会造成 BE 节点扩容。
         因此，我们增加了无状态的 BE 节点，即 BE Compute Node，可以快速进行扩容，增加计算负载，提高数据湖查询效率。在弹性场景中，这个特性会非常有用。
 
-![弹性计算节点.jpg](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\弹性计算节点.jpg)
+![弹性计算节点.jpg](images/弹性计算节点.jpg)
 
 #3、数据湖联邦分析未来规划
+
 ##3.1、增强数据湖Index
+
 增强 Iceberg/Hudi Index
 
     Hive、Spark、Presto、Flink等引擎已经针对 Iceberg/Hudi Index 做了很多相关优化，这些引擎与数据湖已经有比较紧密的结合，各种优化与加速手段相对比较完善。
 
     但对于 Doris 这种新接入的引擎来说，对于 Iceberg/Hudi Index 的支持还不是很完善，我们计划对其进行增强。在 FE 查询规划阶段，充分利用 Iceberg/Hudi metadata 中的 Index 信息进行查询过滤，减少数据扫描，提升查询效率。
 
-![数据湖Index增强.jpg](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\数据湖Index增强.jpg)
+![数据湖Index增强.jpg](images/数据湖Index增强.jpg)
 
 增强数据湖写入能力 DataLake Sink
 
@@ -161,7 +175,7 @@ _以 Hive MetaStore举例,Catalog 与外部元数据对接_
     
     ● 针对 Hudi 表，增加 Parquet Writer 和 Hudi metadata sync。
 
-![DataLakeSink.jpg](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\DataLakeSink.jpg)
+![DataLakeSink.jpg](images/DataLakeSink.jpg)
 
 ##3.2、Iceberg metadata center
 
@@ -171,4 +185,4 @@ _以 Hive MetaStore举例,Catalog 与外部元数据对接_
     
     在这个模式下，首先 Doris 可以完成Iceberg 的数据查询加速，另外其他引擎的变更也可以统一提交至 Doris 维护的 Iceberg 的元数据维护中心，实现统计信息的全面维护和查询效率的提升。
 
-![DorisIcebergmetadatacenter.jpg](F:\dreamStudy\dailyStudy\知识学习\日常学习记录\images\DorisIcebergmetadatacenter.jpg)
+![DorisIcebergmetadatacenter.jpg](images/DorisIcebergmetadatacenter.jpg)
