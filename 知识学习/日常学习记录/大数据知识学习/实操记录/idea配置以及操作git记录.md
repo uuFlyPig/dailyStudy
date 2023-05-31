@@ -693,71 +693,120 @@ _以下为命令行方式操作_
 
 **简略清单：**
 
-| <font color=green>**GIT命令**</font>          | <font color=green>**作用**</font>                      |
-|---------------------------------------------|------------------------------------------------------|
-| git remote add [别名] [URL]                   | 添加远程仓库别名                                             |
-| git status                                  | 检查项目状态                                               |
-| git add .                                   | 添加当前目录的所有文件到暂存区                                      |
-| git add file1 file2 ...                     | 添加指定文件到暂存区                                           |
-| git add dir(目录)                             | 添加指定目录到暂存区，包括子目录                                     |
-| git add -p                                  | 添加每个变化前，都会要求确认；对于同一个文件的多处变化，可以实现分次提交                 |                                   |                                 |
-| git commit -m ""                            | 在本地提交                                                |
-| git push                                    | 推送到远程仓库                                              |
-| git pull                                    | 从远程仓库拉取代码                                            |
-| git reset                                   | 回退版本                                                 |
-| git archive                                 | 生成一个可供发布的压缩包                                         |
-| git blame file文件                            | 显示指定文件是什么人在什么时间修改过                                   |
-| git branch                                  | 列出分支,没有参数时,会列出在本地的所有分支并显示当前正处于哪一个分支上                 |
-| git branch -r                               | 列出所有远程分支                                             |
-| git branch -a                               | 列出所有本地分支和远程分支                                        |
-| git branch [branch_newname]                 | 新建分支，但依然停留在当前分支                                      |
-| git branch -d [branch_name]                 | 删除分支                                                 |
-| git branch -dr [远程分支名]                      | 删除远程分支                                               |
-| git branch [branch] commit                  | 新建一个分支，指向指定commit                                    |
-| git branch --track [branch] [remote-branch] | 新建一个分支，与指定的远程分支建立追踪关系                                |
-| git branch --set-upstream [分支] [远程分支]       | 建立追踪关系，在现有分支于指定的远程分支之间                               |
-| git checkout -                              | 切换到上一个分支                                             |
-| git checkout .                              | 恢复暂存区的所有文件到工作区                                       |
-| git checkout [分支名]                          | 切换到指定分支，并更新工作区                                       |
-| git checkout -b [新分支名称]                     | 新建一个分支并切换到该分支                                        |
-| git checkout -b [新分支名称] [标签]                | 新建一个分支，指向某个标签                                        |
-| git checkout [file]                         | 恢复暂存区的指定文件到工作区                                       |
-| git checkout commit [file]                  | 恢复某个commit的指定文件到暂存区和工作区                              |
-| git cherry-pick commit                      | 选择一个commit，合并进当前分支                                   |
-| git commit                                  | 将暂存区内容添加到仓库中                                         |
-| git commit -a                               | 提交工作区自上次commit之后的变化，直接到仓库区                           |
-| git commit -v                               | 提交时显示所有diff信息                                        |
-| git commit -m “备注内容”                        | 提交暂存区到本地仓库中并添加备注 -m提交信息                              |
-| git commit [file1 file2] … -m “备注内容”        | 提交暂存区的指定文件到仓库区                                       |
-| git commit --amend -m “备注信息”                | 使用一次新的commit，替代上一次提交；如果代码没有任何新变化，则用来改写上一次commit的提交信息 |
-| git commit --amend [file1 file2 …]          | 提交暂存区的指定文件到仓库区                                       |
-| git clone [url]                             | 下载一个项目和它的整个代码历史                                      |
-| git config -e                               | 编辑git配置文件      针对当前仓库                                |
-| git config -e --global                      | 编辑git配置文件      针对系统上所有仓库                             |
-| git config --list                           | 显示当前的git配置信息  --list可简写为 -l                          |
-| git config --system --list                  | 查看系统config配置信息                                       |
-| git config --global --list                  | 查看当前用户（global全局）配置                                   |
-| git config --global user.name “yourName”    | 设置提交代码时的用户信息                                         |
-| git config --global user. email “yourEmail” | 如果去掉 --global 参数只对当前仓库有效                             |
-| git diff                                    | 显示暂存区和工作区的差异                                         |
-| git diff --cached [文件]                      | 显示暂存区和上一个commit的差异                                   |
-| git diff HEAD                               | 显示工作区与当前分支最新commit之间的差异                              |
-| git diff first-branch…second-branch         | 显示两次提交之间的差异                                          |
-| git diff --shortstat “@{0 day ago}”         | 显示今天你写了多少行代码                                         |
-| git fetch                                   | 从远程获取代码库                                             |
-|                                             |                                                      |
-|                                             |                                                      |
-|                                             |                                                      |
-|                                             |                                                      |
-|                                             |                                                      |
-|                                             |                                                      |
-|                                             |                                                      |
-|                                             |                                                      |
-| git fetch origin [远程仓库的分支名]                 | 把远程分支拉到本地                                            |
-| git fetch [远程]                              | 下载远程仓库的所有变动                                          |
-| git init                                    | 初始化git仓库                                             |
+| <font color=green>**GIT命令**</font>                                        | <font color=green>**作用**</font>                               |
+|---------------------------------------------------------------------------|---------------------------------------------------------------|
+| <font color= #871F78>git remote add [别名] [URL]</font>                     | 添加远程仓库别名                                                      |
+| git status                                                                | 检查项目状态                                                        |
+| git add .                                                                 | 添加当前目录的所有文件到暂存区                                               |
+| git add file1 file2 ...                                                   | 添加指定文件到暂存区                                                    |
+| git add dir(目录)                                                           | 添加指定目录到暂存区，包括子目录                                              |
+| git add -p                                                                | 添加每个变化前，都会要求确认；对于同一个文件的多处变化，可以实现分次提交                          |                                   |                                 |
+| git commit -m ""                                                          | 在本地提交                                                         |
+| git push                                                                  | 推送到远程仓库                                                       |
+| git pull                                                                  | 从远程仓库拉取代码                                                     |
+| git reset                                                                 | 回退版本                                                          |
+| git archive                                                               | 生成一个可供发布的压缩包                                                  |
+| git blame file文件                                                          | 显示指定文件是什么人在什么时间修改过                                            |
+| git branch                                                                | 列出分支,没有参数时,会列出在本地的所有分支并显示当前正处于哪一个分支上                          |
+| git branch -r                                                             | 列出所有远程分支                                                      |
+| git branch -a                                                             | 列出所有本地分支和远程分支                                                 |
+| git branch [branch_newname]                                               | 新建分支，但依然停留在当前分支                                               |
+| git branch -d [branch_name]                                               | 删除分支                                                          |
+| git branch -dr [远程分支名]                                                    | 删除远程分支                                                        |
+| git branch [branch] commit                                                | 新建一个分支，指向指定commit                                             |
+| git branch --track [branch] [remote-branch]                               | 新建一个分支，与指定的远程分支建立追踪关系                                         |
+| git branch --set-upstream [分支] [远程分支]                                     | 建立追踪关系，在现有分支于指定的远程分支之间                                        |
+| git checkout -                                                            | 切换到上一个分支                                                      |
+| git checkout .                                                            | 恢复暂存区的所有文件到工作区                                                |
+| git checkout [分支名]                                                        | 切换到指定分支，并更新工作区                                                |
+| git checkout -b [新分支名称]                                                   | 新建一个分支并切换到该分支                                                 |
+| git checkout -b [新分支名称] [标签]                                              | 新建一个分支，指向某个标签                                                 |
+| git checkout [file]                                                       | 恢复暂存区的指定文件到工作区                                                |
+| git checkout commit [file]                                                | 恢复某个commit的指定文件到暂存区和工作区                                       |
+| git cherry-pick commit                                                    | 选择一个commit，合并进当前分支                                            |
+| git commit                                                                | 将暂存区内容添加到仓库中                                                  |
+| git commit -a                                                             | 提交工作区自上次commit之后的变化，直接到仓库区                                    |
+| git commit -v                                                             | 提交时显示所有diff信息                                                 |
+| git commit -m “备注内容”                                                      | 提交暂存区到本地仓库中并添加备注 -m提交信息                                       |
+| git commit [file1 file2] … -m “备注内容”                                      | 提交暂存区的指定文件到仓库区                                                |
+| git commit --amend -m “备注信息”                                              | 使用一次新的commit，替代上一次提交；如果代码没有任何新变化，则用来改写上一次commit的提交信息          |
+| git commit --amend [file1 file2 …]                                        | 提交暂存区的指定文件到仓库区                                                |
+| git clone [url]                                                           | 下载一个项目和它的整个代码历史                                               |
+| git config -e                                                             | 编辑git配置文件      针对当前仓库                                         |
+| git config -e --global                                                    | 编辑git配置文件      针对系统上所有仓库                                      |
+| git config --list                                                         | 显示当前的git配置信息  --list可简写为 -l                                   |
+| git config --system --list                                                | 查看系统config配置信息                                                |
+| git config --global --list                                                | 查看当前用户（global全局）配置                                            |
+| git config --global user.name “yourName”                                  | 设置提交代码时的用户信息                                                  |
+| git config --global user. email “yourEmail”                               | 如果去掉 --global 参数只对当前仓库有效                                      |
+| git diff                                                                  | 显示暂存区和工作区的差异                                                  |
+| git diff --cached [文件]                                                    | 显示暂存区和上一个commit的差异                                            |
+| git diff HEAD                                                             | 显示工作区与当前分支最新commit之间的差异                                       |
+| git diff first-branch…second-branch                                       | 显示两次提交之间的差异                                                   |
+| git diff --shortstat “@{0 day ago}”                                       | 显示今天你写了多少行代码                                                  |
+| git fetch                                                                 | 从远程获取代码库                                                      |                                               |
+| git fetch origin [远程仓库的分支名]                                               | 把远程分支拉到本地                                                     |
+| git fetch [远程]                                                            | 下载远程仓库的所有变动                                                   |
+| git init                                                                  | 初始化git仓库                                                      |
+| git init project-name                                                     | 新建一个目录，将其初始化为 Git代码库                                          |
+| git log                                                                   | 查看历史提交记录                                                      |
+| git log -p [文件]                                                           | 显示指定文件相关的每一次diff                                              |
+| git log --stat                                                            | 显示commit历史，以及每次commit发生变更的文件                                  |
+| git log -s [关键字]                                                          | 根据关键词搜索提交历史                                                   |
+| git log 标签 HEAD --pretty=format:%s                                        | 显示某个commit之后的变动，每个commit占据一行                                  |
+| git log 标签 HEAD --grep feature                                            | 显示某个commit之后的所有变动，其提交说明必须符合搜索条件                               |
+| git log --follow [文件]；git whatchanged [文件]                                | 显示某个文件的版本历史，包括文件改                                             |
+| git log --oneline                                                         | 查看历史纪录的简介版本                                                   |
+| git log --graph                                                           | 查看历史中什么时候出现了分支、合并                                             |
+| git log -5 --pretty --oneline                                             | 显示过去5次提交                                                      |
+| git log --reverse --oneline                                               | 用--reverse参数来逆向显示所有日志                                         |
+| git log --author                                                          | 查找指定用户的提交日志可以使用：                                              |
+| git log --author=linus --oneline -5                                       | 找linus提交的部分.如果要指定日期可以执行：--since 和--before，也可以用--until 和—after |
+| git log --oneline --before={3.weeks.ago} --after={2010-04-18} --no-merges | 指定日期执行的举例                                                     |
+| git mv                                                                    | 移动或重命名工作区文件                                                   |
+| git mv [file-original] [file-renamed]                                     | 改名文件，并且将这个改名放入暂存区                                             |
+| git merge                                                                 | 合并分支                                                          |
+| git merge [分支名]                                                           | 合并指定分支到当前分支                                                   |
+| git merge login                                                           | 合并login 里所有分支                                                 |
+| git pull                                                                  | 下载远程代码并合并                                                     |
+| git pull [remote] [branch]                                                | 取回远程仓库某个分支的内容(变化)，并与本地分支合并                                    |
+| git push                                                                  | 上传远程代码并合并                                                     |
+| git push origin [标签]                                                      | 提交指定标签                                                        |
+| git push origin [--tags]                                                  | 提交所有标签                                                        |
+| git push origin [分支]                                                      | 推送到远程仓库并指定远程分支名称是当前的分支名称保存                                    |
+| git push origin --force                                                   | 强行推送当前分支到远程仓库，即使有冲突                                           |
+| git push origin --all                                                     | 推送所有分支到远程仓库                                                   |
+| git push origin --delete [branch-name]                                    | 删除远程分支                                                        |
+| git push origin :refs/tags/[标签名]                                          | 删除远程标签                                                        |
+| git reset                                                                 | 回退版本                                                          |
+| git reset file                                                            | 重置暂存区的指定文件，与上一次commit保持一致，但工作区不变                              |
+| git reset --hard                                                          | 重置暂存区与工作区，与上一次commit保持一致                                      |
+| git reset commit                                                          | 重置当前分支的指针为指定commit，同时重置暂存区，但工作区不变                             |
+| git reset --hard commit                                                   | 重置当前分支的HARD为指定commit，同时重置暂存区和工作区，于指定commit一致                  |
+| git reset --keep commit                                                   | 重置当前HEAD为指定commit，但保持暂存区和工作区不变                                |
+| git revert commit                                                         | 新建一个commit，用来撤销指定commit；后者的所有变化都将被前者抵消，并且应用到当前分支              |
+| git reflog                                                                | 显示当前分支的最近几次提交                                                 |
+| git rm [file1] [file2] …                                                  | 删除工作区文件，并且将这次删除放入暂存区                                          |
+| git rm --cached  [file]                                                   | 停止追踪指定文件，但该文件会保留在工作区                                          |
+| git remote                                                                | 远程仓库操作                                                        |
+| git remote -v                                                             | 显示所有远程仓库                                                      |
+| git remote show [远程]                                                      | 显示某个远程仓库的信息                                                   |
+| git remote add shortname [url]                                            | 增加一个新的远程仓库，并命名                                                |
+| git stash                                                                 | 将commit 到本地仓库的内容，取出来放到暂存区(stash)（这时你的工作区是干净的）  ｜              |
+| git stash pop                                                             | 暂时将未提交的变化移出，稍后再移入                                             |
+| git status                                                                | 查看仓库当前的状态，显示有变更的文件                                            |
+| git status [文件名]                                                          | 查看指定文件当前的状态，显示有变更的文件                                          |
+| git show [标签]                                                             | 查看标签信息                                                        |
+| git show commit                                                           | 显示某次提交的元数据和内容变化                                               |
+| git show --name-only commit                                               | 显示某次提交发生变化的文件                                                 |
+| git show commit:[filename]                                                | 显示某次提交时，某个文件的内容                                               |
+| git shortlog -sn                                                          | 显示所有提交过的用户，按提交次数排序                                            |
+| git tag                                                                   | 列出所有标签                                                        |
+| git tag [标签名]                                                             | 新建一个标签，在当前commit                                              |
+| git tag [标签名] commit                                                      | 新建一个标签，在指定commit                                              |
+| git tag -d [标签名]                                                          | 删除本地标签                                                        |
 
-
+_以上命令大全摘自：https://blog.csdn.net/CSDN_33901573/article/details/121111157_
 
 
 
