@@ -91,14 +91,56 @@ _**记录做过的具有代表性的MySQL算法题，可快速阅览回顾SQL语
 **思路简介：**
 
 ```sql
-
+统计25岁以下，25岁及以上的员工人数，主要使用分组统计行数的方式，case when（if也可） + group by ；另一种方式可以使用分别筛选出年龄count后union
+    25岁以及年龄未知的分为25岁以下，因此(age < 25 or age is null)  '25岁以下'
 ```
 
 **实现代码：**
 
 ```sql
-
-
+    select 
+        if(age <25 or age is null, '25岁以下', '25岁及以上') as age_cut,
+        --或用case when then 
+        count(*) as number
+    from Employees
+    group by age_cut
+    
+    
 ```
 
 ----
+
+####3、修复表中的字母
+
+**题目简介：**
+
+```sql
+编写一个 SQL 查询来修复名字，使得只有第一个字符是大写的，其余都是小写的。
+返回按 user_id 排序的结果表。
+```
+
+**示例：**
+
+输入：无
+
+<font color= #871F78>输出：<font>
+
+**思路简介：**
+
+```sql
+通过字符串函数，对字符串进行截取转换后再拼接，实现将某一字母变成大写的目的
+concat字符串拼接函数，substr字符串截断函数，upper，lower字符大小写函数
+```
+
+**实现代码：**
+
+```sql
+select 
+    user_id,
+    concat(upper(left(name,1)),lower(substr(name,2))) as name
+from Users
+order by user_id
+```
+
+----
+
