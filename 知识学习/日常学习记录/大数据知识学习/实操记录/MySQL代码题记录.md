@@ -6,8 +6,13 @@ _**记录做过的具有代表性的MySQL算法题，可快速阅览回顾SQL语
 
 ----
 **目录：**
+    [1、计算特殊金额](1、计算特殊金额)
     
-    
+
+
+
+
+
 ####1、计算特殊金额
 
 **题目简介：**
@@ -140,6 +145,161 @@ select
     concat(upper(left(name,1)),lower(substr(name,2))) as name
 from Users
 order by user_id
+```
+
+----
+
+####4、按日期分组销售产品
+
+**题目简介：**
+
+```sql
+查找每个日期、销售的不同产品的数量及其名称。每个日期的销售产品名称应按词典序排列。返回按 sell_date 排序的结果表。
+```
+
+**示例：**
+
+输入：<font color = green>Activities 表：</font>
+
+| sell_date  | product    |
+|------------|------------|
+| 2020-05-30 | Headphone  |
+| 2020-06-01 | Pencil     |
+| 2020-06-02 | Mask       |
+| 2020-05-30 | Basketball |
+| 2020-06-01 | Bible      |
+| 2020-06-02 | Mask       |
+| 2020-05-30 | T-Shirt    |
+
+<font color= #871F78>输出：<font>
+
+| sell_date  | num_sold | products                     |
+|------------|----------|------------------------------|
+| 2020-05-30 | 3        | Basketball,Headphone,T-shirt |
+| 2020-06-01 | 2        | Bible,Pencil                 |
+| 2020-06-02 | 1        | Mask                         |
+
+
+**思路简介：**
+
+```sql
+每个日期是以日期为分组，不同的产品数量即需要对产品进行去重后统计count(distinct product),根据输出是分组后对字段进行拼接
+使用函数group_concat，在函数内部进行排序指定分隔符等操作。
+
+    --将分组中column1这一列对应的多行的值按照column2 升序或者降序进行连接，其中分隔符为seq
+    --如果用到了DISTINCT，将表示将不重复的column1按照column2升序或者降序连接
+    --如果没有指定SEPARATOR的话，也就是说没有写，那么就会默认以 ','分隔
+    GROUP_CONCAT([DISTINCT] column1 [ORDER BY column2 ASC\DESC] [SEPARATOR seq]);
+```
+
+**实现代码：**
+
+```sql
+    select 
+        sell_date,
+        count(distinct product) as num_sold,
+        group_concat(distinct product order by product separator ',') as products
+    from Activities
+    group by sell_date
+    order by sell_date
+```
+
+----
+
+####5、丢失的雇员信息
+
+**题目简介：**
+
+```sql
+写出一个查询语句，找到所有 丢失信息 的雇员id。当满足下面一个条件时，就被认为是雇员的信息丢失：
+雇员的 姓名 丢失了，或者
+雇员的 薪水信息 丢失了
+```
+
+**示例：**
+
+输入：<font color = green>Employees表</font>
+
+| employee_id | name     | 
+|-------------|----------|
+| 2           | Crew     | 
+| 4           | Haven    | 
+| 5           | Kristian |
+
+<font color = green>Salaries表</font>
+
+| employee_id | salary |
+|-------------|--------|
+| 5           | 76071  |
+| 1           | 22517  |
+| 4           | 63539  |
+
+<font color= #871F78>输出：<font>
+
+| employee_id | 
+|-------------|
+| 1           |
+| 2           |
+
+
+**思路简介：**
+
+```sql
+将雇员表进行连接，连接后雇员姓名为空或雇员薪水为空即为丢失信息的雇员，方法上可以将二表进行全外联后进行条件判断
+但mysql中没有全外联，因此可以考虑先内连接取出信息不丢失的雇员，再排除出丢失信息的雇员
+或使用union，将or的条件拆分，union进行连接。雇员表中id均有名字，薪水表中雇员均有薪水，即挑选出雇员在薪水表中没有薪水的，在雇员表中没有存在的union即可
+```
+
+**实现代码：**
+
+```sql
+select employee_id from Employees where employee_id not in (select employee_id from Salaries)
+union
+select employee_id from Salaries where employee_id not in (select employee_id from Employees)
+order by employee_id 
+```
+
+----
+
+####6、表格转换
+
+**题目简介：**
+
+```sql
+将多列的表格转换成多行即（列转行）。
+```
+
+**示例：**
+
+输入：<font color = green>Products表</font>
+
+| product_id | store1 | store2 | store3 |
+|------------|--------|--------|--------|
+| 0          | 95     | 100    | 105    |
+| 1          | 70     | null   | 80     |
+
+
+<font color= #871F78>输出：<font>
+
+| product_id | store  | price |
+|------------|--------|-------|
+| 0          | store1 | 95    |
+| 0          | store2 | 100   |
+| 0          | store3 | 105   |
+| 1          | store1 | 70    |
+| 1          | store3 | 80    |
+
+**思路简介：**
+
+```sql
+
+```
+
+**实现代码：**
+
+```sql
+
+
 ```
 
 ----
