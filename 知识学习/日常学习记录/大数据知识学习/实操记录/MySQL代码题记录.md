@@ -292,6 +292,160 @@ order by employee_id
 **思路简介：**
 
 ```sql
+列转行使用union all或者union，将数据行分别select 再union，最后注意值为空是否输出以及是否需要排序。
+行转列则可以使用group by + sum的搭配。
+```
+
+**实现代码：**
+
+```sql
+select product_id,'store1' as store,store1 as price where store1 is not null 
+union all
+select product_id,'store2' as store,store2 as price where store2 is not null
+union all
+select product_id,'store3' as store,store3 as price where store3 is not null
+```
+
+----
+
+####7、树节点
+
+**题目简介：**
+
+```sql
+给定一个表tree，id是树节点的编号，p_id是它父节点的编号，树中每个节点属于以下三种类型之一：
+    ·叶子：如果这个节点没有任何孩子节点。
+    ·根：如果这个节点是整棵树的根，即没有父节点
+    ·内部节点：如果这个节点既不是叶子节点也不是根节点。
+输出节点id，以及其对应的节点类型。
+```
+
+**示例：**
+
+输入：<font color = green>tree表</font>
+
+| id  | p_id | 
+|-----|------|
+| 1   | null |
+| 2   | 1    | 
+| 3   | 1    |
+| 4   | 2    |
+| 5   | 2    |
+
+<font color= #871F78>输出：<font>
+
+| id  | Type  |
+|-----|-------|
+| 1   | root  |
+| 2   | Inner |
+| 3   | Leaf  |
+| 4   | Leaf  |
+| 5   | Leaf  |
+
+**思路简介：**
+
+```sql
+根据题目，当id的父节点p_id为null时即此id为根节点root，当id不存在子节点的时候即id not in(父节点集合)为叶子节点，其余为中间节点
+```
+
+**实现代码：**
+
+```sql
+    select
+        id,
+        case when p_id is null then 'root'
+            when id not in (select p_id from tree where p_id is not null) then 'leaf'
+            else 'inner'
+        end as type 
+    from tree
+    
+    --为什么要在where中添加is not null，因为如果判断中not in（A），A中含有一个null就会全部返回null，不管后面是否符合
+```
+
+----
+
+####8、查询第二高薪水
+
+**题目简介：**
+
+```sql
+查找薪资表中的第二高薪水,如果没有第二高的薪水则输出null
+```
+
+**示例：**
+
+输入：<font color = green>Employee表</font>     
+
+| id  | salary |              
+|-----|--------|
+| 1   | 100    |
+| 2   | 200    |
+| 3   | 300    |
+
+
+<font color= #871F78>输出：<font>
+
+| SecondHighestSalary |
+|---------------------|
+| 200                 |
+
+输入：<font color = green>Employee表</font>
+
+| id  | salary |              
+|-----|--------|
+| 1   | 100    |
+
+<font color= #871F78>输出：<font>
+
+| SecondHighestSalary |
+|---------------------|
+| null                |
+
+**思路简介：**
+
+```sql
+
+```
+
+**实现代码：**
+
+```sql
+
+
+```
+
+----
+
+####9、上升温度
+
+**题目简介：**
+
+```sql
+今天比昨天的温度高，且天数相差1，求满足这种情况的今天的id
+```
+
+**示例：**
+
+输入：<font color = green>Weather表</font>
+
+| id  | recordDate | Temperature |
+|-----|------------|-------------|
+| 1   | 2015-01-01 | 10          |
+| 2   | 2015-01-02 | 25          |
+| 3   | 2015-01-03 | 20          |
+| 4   | 2015-01-04 | 30          |
+
+<font color= #871F78>输出：<font>
+
+| id  | 
+|-----|
+| 2   |
+| 4   |
+
+
+**思路简介：**
+
+```sql
 
 ```
 
