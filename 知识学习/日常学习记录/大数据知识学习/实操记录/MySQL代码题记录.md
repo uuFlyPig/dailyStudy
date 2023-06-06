@@ -11,8 +11,6 @@ _**记录做过的具有代表性的MySQL算法题，可快速阅览回顾SQL语
 
 
 
-
-
 ####1、计算特殊金额
 
 **题目简介：**
@@ -404,13 +402,19 @@ select product_id,'store3' as store,store3 as price where store3 is not null
 **思路简介：**
 
 ```sql
-
+在mysql中利用排序后，limit将处于第二高的薪水取出，limit 1,1，需要注意薪水去重以及null的输出
 ```
 
 **实现代码：**
 
 ```sql
-
+    select
+           ifnull(
+               (select distinct salary 
+               from Employee 
+               order by salary desc 
+                   limit 1,1
+               ),null) AS SecondHighestSalary
 
 ```
 
@@ -442,6 +446,109 @@ select product_id,'store3' as store,store3 as price where store3 is not null
 | 2   |
 | 4   |
 
+
+**思路简介：**
+
+```sql
+通过自连接join，将日期相差1 datediff(t1.day,t2.day) = 1 以及温度大小条件t1.t > t2.table 
+设置在连接条件中，即可以把数据筛选出来。
+```
+
+**实现代码：**
+
+```sql
+    select 
+        t2.id
+    from Weather as t1 join Weather as t2 
+        on datediff(t2.recordDate-t1.recordDate) = 1
+        and t2.Temperature > t1.Temperature
+
+```
+
+----
+
+####10、求最大值，求一类的最大值
+
+**题目简介：**
+
+```sql
+取出下列订单表中，哪个顾客的订单数是最多的，取订单数最大的顾客number。
+```
+
+**示例：**
+
+输入：<font color = green>Orders表</font>
+
+| order_number | customer_number |
+|--------------|-----------------|
+| 1            | 1               | 
+| 2            | 2               |
+| 3            | 3               |
+| 4            | 3               |
+
+
+<font color= #871F78>输出：<font>
+
+| customer_number |
+|-----------------|
+| 3               |
+
+**思路简介：**
+
+```sql
+取订单数最大的顾客，以顾客的number为分组条件，count(order_number)统计订单数,having中嵌套子查询> ALL()取最大值
+```
+
+**实现代码：**
+
+```sql
+select customer_number
+from Orders
+group by customer_number
+having count(*) >= ALL (
+    select count(order_number)
+    from Orders
+    group by customer_number
+)
+
+--窗口函数实现
+select t.customer_number
+from
+    (select customer_number, rank() over(order by count(order_number) desc) as ranking
+     from orders
+     group by customer_number) t
+where t.ranking = 1
+```
+
+----
+
+####11、求各个玩家的日期第一个
+
+**题目简介：**
+
+```sql
+写一条SQL查询语句获取每位玩家第一次登录平台的日期
+```
+
+**示例：**
+
+输入：<font color = green>Activity表</font>
+
+| player_id | device_id | event_date | games_played |
+|-----------|-----------|------------|--------------|
+| 1         | 2         | 2016-03-01 | 5            |
+| 1         | 2         | 2016-05-02 | 6            |
+| 2         | 3         | 2017-06-25 | 1            | 
+| 3         | 1         | 2016-03-02 | 0            |
+| 3         | 4         | 2018-07-03 | 5            |
+
+<font color= #871F78>输出：<font>
+
+| player_id | fight_loin |
+|-----------|------------|
+| 1         | 2016-03-01 |
+| 2         | 2017-06-25 |
+| 3         | 2016-03-02 |
 
 **思路简介：**
 
