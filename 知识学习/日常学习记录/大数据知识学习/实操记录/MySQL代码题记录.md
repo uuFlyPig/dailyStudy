@@ -613,6 +613,60 @@ from Activity
 **思路简介：**
 
 ```sql
+获取2020年登录过的，2020未登录不用选择则可以在where条件中筛选出2020年的登录信息，
+再按照id  group by + max取出最大的日期即为最后一次登录时间。
+```
+
+**实现代码：**
+
+```sql
+
+    select
+        user_id,max(time_stamp) as last_stamp
+    from Logins
+    where year (time_stamp) = 2020
+    group by user_id
+    
+```
+
+----
+
+####13、股票的资本损益
+
+**题目简介：**
+
+```sql
+求买入和卖出的差值，即为收益多少
+```
+
+**示例：**
+
+输入：<font color = green>Stocks表</font>
+
+| stock_name   | opration | operation_day | price |
+|--------------|----------|---------------|-------|
+| Leetcode     | Buy      | 1             | 1000  |
+| Corona Masks | Buy      | 2             | 10    |
+| Leetcode     | Sell     | 5             | 9000  |
+| Handbags     | Buy      | 17            | 30000 |
+| Corona Masks | Sell     | 3             | 1010  |
+| Corona Masks | Buy      | 4             | 1000  |
+| Corona Masks | Sell     | 5             | 500   |
+| Corona Masks | Buy      | 6             | 1000  |
+| Handbags     | Sell     | 29            | 7000  |
+| Corona Masks | Sell     | 10            | 10000 |
+
+<font color= #871F78>输出：<font>
+
+| stock_name   | capital_gain_loss |
+|--------------|-------------------|
+| Corona Masks | 9500              |
+| Leetcode     | 8000              |
+| Handbags     | -23000            |
+
+**思路简介：**
+
+```sql
 
 ```
 
