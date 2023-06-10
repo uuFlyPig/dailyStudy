@@ -643,18 +643,18 @@ from Activity
 
 输入：<font color = green>Stocks表</font>
 
-| stock_name   | opration | operation_day | price |
-|--------------|----------|---------------|-------|
-| Leetcode     | Buy      | 1             | 1000  |
-| Corona Masks | Buy      | 2             | 10    |
-| Leetcode     | Sell     | 5             | 9000  |
-| Handbags     | Buy      | 17            | 30000 |
-| Corona Masks | Sell     | 3             | 1010  |
-| Corona Masks | Buy      | 4             | 1000  |
-| Corona Masks | Sell     | 5             | 500   |
-| Corona Masks | Buy      | 6             | 1000  |
-| Handbags     | Sell     | 29            | 7000  |
-| Corona Masks | Sell     | 10            | 10000 |
+| stock_name   | operation | operation_day | price |
+|--------------|-----------|---------------|-------|
+| Leetcode     | Buy       | 1             | 1000  |
+| Corona Masks | Buy       | 2             | 10    |
+| Leetcode     | Sell      | 5             | 9000  |
+| Handbags     | Buy       | 17            | 30000 |
+| Corona Masks | Sell      | 3             | 1010  |
+| Corona Masks | Buy       | 4             | 1000  |
+| Corona Masks | Sell      | 5             | 500   |
+| Corona Masks | Buy       | 6             | 1000  |
+| Handbags     | Sell      | 29            | 7000  |
+| Corona Masks | Sell      | 10            | 10000 |
 
 <font color= #871F78>输出：<font>
 
@@ -663,6 +663,126 @@ from Activity
 | Corona Masks | 9500              |
 | Leetcode     | 8000              |
 | Handbags     | -23000            |
+
+**思路简介：**
+
+```sql
+利用group by + sum，sum里面再嵌套if判断如果是Buy则价格为负，否则为正，进行合计计算即可。
+```
+
+**实现代码：**
+
+```sql
+    select
+        stock_name,
+        sum(if(operation = "Buy",-price,price)) as capital_gain_loss
+    from Stocks
+    group by stock_name
+```
+
+----
+
+####14、市场分析
+
+**题目简介：**
+
+```sql
+请写出一条SQL语句以查询每个用户的注册日期和在2019年作为买家的订单总数
+```
+
+**示例：**
+
+输入：<font color = green>Users表</font>
+
+| user_id | join_date  | favorite_brand |
+|---------|------------|----------------|
+| 1       | 2018-01-01 | Lenovo         |
+| 2       | 2018-02-09 | Samsung        |
+| 3       | 2018-01-19 | LG             |
+| 4       | 2018-06-21 | HP             |
+
+<font color = green>Orders表</font>
+
+| order_id | order_date | item_id | buyer_id | seller_id |
+|----------|------------|---------|----------|-----------|
+| 1        | 2019-08-01 | 4       | 1        | 2         |
+| 2        | 2018-08-02 | 2       | 1        | 3         |
+| 3        | 2019-08-03 | 3       | 2        | 3         |
+| 4        | 2018-08-04 | 1       | 4        | 2         |
+| 5        | 2018-08-04 | 1       | 3        | 4         |
+| 6        | 2019-08-05 | 2       | 2        | 4         |
+
+<font color = green>Items表</font>
+
+| item_id | item_brand | 
+|---------|------------|
+| 1       | Samsung    |
+| 2       | Lenovo     | 
+| 3       | LG         | 
+| 4       | HP         |
+
+
+<font color= #871F78>输出：<font>
+
+| buyer_id | join_date  | orders_in_2019 |
+|----------|------------|----------------|
+| 1        | 2018-01-01 | 1              |
+| 2        | 2018-02-09 | 2              |
+| 3        | 2018-01-19 | 0              |
+| 4        | 2018-05-21 | 0              |
+
+**思路简介：**
+
+```sql
+计算用户在2019年作为买家的订单总数，在订单表中选取出2019的订单，以buyer_id，买家为分组条件，统计总数，并且将Users关联取得用户注册日期
+```
+
+**实现代码：**
+
+```sql
+select
+    buyer_id,
+    join_date,
+    count(*)
+from Orders AS A left join Users AS B on A.buyer_id = B.user_id 
+where year(order_date) = '2019'
+group by buyer_id
+
+```
+
+----
+
+####15、连续出现的数字
+
+**题目简介：**
+
+```sql
+编写一个 SQL 查询，查找所有至少连续出现三次的数字。
+返回的结果表中的数据可以按 任意顺序 排列。
+```
+
+**示例：**
+
+输入：<font color = green>Logs表</font>
+
+| Id  | Num | 
+|-----|-----|
+| 1   | 1   | 
+| 2   | 1   | 
+| 3   | 1   |
+| 4   | 2   |
+| 5   | 1   |
+| 6   | 2   |
+| 7   | 2   |
+
+
+
+<font color= #871F78>输出：<font>
+
+| ConsecutiveNums | 
+|-----------------|
+| 1               | 
+
 
 **思路简介：**
 
