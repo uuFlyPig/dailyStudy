@@ -6,7 +6,10 @@ _**记录做过的具有代表性的MySQL算法题，可快速阅览回顾SQL语
 
 ----
 **目录：**
-    [1、计算特殊金额](1、计算特殊金额)
+
+[1、计算特殊金额](#1、计算特殊金额)
+
+[2、计算25岁以上和以下的用户数量](#2、计算25岁以上和以下的用户数量)
     
 
 
@@ -787,14 +790,30 @@ group by buyer_id
 **思路简介：**
 
 ```sql
-
+查找所有至少连续出现三次的数字，换一种思维就是在同一个num中，如果有三个id连续，那么这个num符合条件，依据窗口函数按照num分组
+给id排序，排序后计算id与序列的差值，id + 1 - row_number() over(partition by Num order by Id) as diff
+其中如果id连续，那么diff就应该一致，因此再按照diff进行分组，如果count(*)>3即满足条件。
 ```
 
 **实现代码：**
 
 ```sql
-
-
+--窗口函数方式
+    select
+        Num as ConsecutiveNums
+    from (
+             select Num,
+                    id + 1 - row_number() over(partition by Num order by Id) as diff
+             from Logs
+         ) as t
+    group by diff
+    having count(*) >= 3
+    
+--自连接方式
+    select
+        num as ConsecutiveNums
+    from Logs as l1 left join Logs as l2 on l1.id = l2.id-1 left join Logs as l3 on l2.id = l3.id-1
+    where l1.num = l2.num and l2.num = l3.num
 ```
 
 ----

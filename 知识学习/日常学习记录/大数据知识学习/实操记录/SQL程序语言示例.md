@@ -37,7 +37,63 @@ SQL语言通常分为五类：
 
 ##2.1、DDL（数据定义语言）
 
+----
 
+<font color= #871F78>****MySQL****</font>
+
+
+**1、SHOW**
+    
+    (1)查询所有数据库:SHOW DATABASES;
+    (2)查询所有数据表:SHOW TABLES;
+    (3)查询数据表的字符集:SHOW TABLE STATUS FROM mysql LIKE 'user';
+                                    --语法：SHOW TABLE STATUS FROM 数据库名称 LIKE '表名';
+    (4)查询数据库的创建表语句:SHOW CREATE DATABASE mysql;
+                                    --语法：SHOW CREATE DATABASE 数据库名称;
+    
+
+**2、CREATE**
+    
+    (1)创建数据库:CREATE DATABASE [ IF NOT EXISTS] db1;
+
+    (2)创建数据库（指定字符集）:CREATE DATABASE db3 CHARACTER SET utf8;
+
+    (3)创建数据表:CREATE TABLE product(
+                        id INT,
+                        NAME VARCHAR(20),
+                        price DOUBLE,
+                        stock INT
+                );
+                --语法：CREATE TABLE [if not exists] 表名(
+                            列名 数据类型 约束(默认值、唯一、非空),
+                            列名 数据类型 约束,
+                            ...
+                            列名 数据类型 约束,
+                    );
+
+    (4)创建外键:create table student(
+                    stuId int(11) auto_increment primary key,
+                    stuName varchar(50),
+                    gradeId int(4),
+                    phone varchar(4),
+                    constraint `s_g_key` foreign  key (gradeId) references grade (GradeId)
+                )
+
+    (5)创建索引：Create index idx_age on person(age);
+               Create unique index idx_name on person(name);
+               --语法：Create [unique] index index_name on table_name(column_name);
+                unique表示该索引是否唯一，index_name表示索引名称，table_name表示要创建索引的表名称，column_name表示要创建索引的列名。
+    
+    (6)创建视图:Create view v_person as select id, name, age from person;
+               --语法：Create [algorithm = {undefined | merge | temptable}] view view_name as select_statement;
+                其中，algorithm表示创建视图使用的算法，默认为undefined，view_name表示要创建的视图名称，select_statement表示用于创建视图的SELECT查询语句。
+
+
+
+
+**3、ALTER**
+
+**4、DROP**
 ##2.2、DQL（数据查询语言）
 
 
@@ -54,3 +110,5 @@ SQL语言通常分为五类：
 #3、参考链接
 
 [1] CSDN：SQL语言的分类（https://blog.csdn.net/zhanghuiqi205/article/details/124930881）
+[2] CSDN：MySQL基础之DDL命令（https://blog.csdn.net/m0_43405302/article/details/121677165）
+[3] 百度：MySQL的create语句详解（https://baijiahao.baidu.com/s?id=1760939803942190781&wfr=spider&for=pc）
