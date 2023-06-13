@@ -43,55 +43,125 @@ SQL语言通常分为五类：
 
 
 **1、SHOW**
-    
-    (1)查询所有数据库:SHOW DATABASES;
-    (2)查询所有数据表:SHOW TABLES;
-    (3)查询数据表的字符集:SHOW TABLE STATUS FROM mysql LIKE 'user';
-                                    --语法：SHOW TABLE STATUS FROM 数据库名称 LIKE '表名';
-    (4)查询数据库的创建表语句:SHOW CREATE DATABASE mysql;
-                                    --语法：SHOW CREATE DATABASE 数据库名称;
+
+```mysql
+# (1)查询所有数据库:
+    SHOW DATABASES;
+
+# (2)查询所有数据表:
+    SHOW TABLES;
+
+# (3)查询数据表的字符集:
+    SHOW TABLE STATUS FROM mysql LIKE 'user';
+# 语法：SHOW TABLE STATUS FROM 数据库名称 LIKE '表名';
+
+# (4)查询数据库的创建表语句:
+    SHOW CREATE DATABASE mysql;
+# 语法：SHOW CREATE DATABASE 数据库名称;
+```
+   
     
 
 **2、CREATE**
     
-    (1)创建数据库:CREATE DATABASE [ IF NOT EXISTS] db1;
+```mysql
+# (1)创建数据库:
+    CREATE DATABASE /* [ IF NOT EXISTS] */ db1;
 
-    (2)创建数据库（指定字符集）:CREATE DATABASE db3 CHARACTER SET utf8;
+# (2)创建数据库（指定字符集）:
+    CREATE DATABASE db3 CHARACTER SET utf8;
 
-    (3)创建数据表:CREATE TABLE product(
-                        id INT,
-                        NAME VARCHAR(20),
-                        price DOUBLE,
-                        stock INT
-                );
-                --语法：CREATE TABLE [if not exists] 表名(
-                            列名 数据类型 约束(默认值、唯一、非空),
-                            列名 数据类型 约束,
-                            ...
-                            列名 数据类型 约束,
-                    );
+# (3)创建数据表:
+    CREATE TABLE product(
+            id INT,
+            NAME VARCHAR(20),
+            price DOUBLE,
+            stock INT
+    );
+    /*语法：CREATE TABLE [if not exists] 表名(
+                    列名 数据类型 约束(默认值、唯一、非空),
+                    列名 数据类型 约束,
+                    ...
+                    列名 数据类型 约束,
+            );
+    */
 
-    (4)创建外键:create table student(
-                    stuId int(11) auto_increment primary key,
-                    stuName varchar(50),
-                    gradeId int(4),
-                    phone varchar(4),
-                    constraint `s_g_key` foreign  key (gradeId) references grade (GradeId)
-                )
+# (4)创建外键:
+    create table student(
+        stuId int(11) auto_increment primary key,
+        stuName varchar(50),
+        gradeId int(4),
+        phone varchar(4),
+        constraint `s_g_key` foreign  key (gradeId) references grade (GradeId)
+    );
 
-    (5)创建索引：Create index idx_age on person(age);
-               Create unique index idx_name on person(name);
-               --语法：Create [unique] index index_name on table_name(column_name);
-                unique表示该索引是否唯一，index_name表示索引名称，table_name表示要创建索引的表名称，column_name表示要创建索引的列名。
-    
-    (6)创建视图:Create view v_person as select id, name, age from person;
-               --语法：Create [algorithm = {undefined | merge | temptable}] view view_name as select_statement;
-                其中，algorithm表示创建视图使用的算法，默认为undefined，view_name表示要创建的视图名称，select_statement表示用于创建视图的SELECT查询语句。
+# (5)创建索引：
+    Create index idx_age on person(age);
+    Create unique index idx_name on person(name);
+# 语法：Create [unique] index index_name on table_name(column_name);
+# unique表示该索引是否唯一，index_name表示索引名称，table_name表示要创建索引的表名称，column_name表示要创建索引的列名。
 
+# (6)创建视图:
+    Create view v_person as select id, name, age from person;
+# 语法：Create [algorithm = {undefined | merge | temptable}] view view_name as select_statement;
+# 其中，algorithm表示创建视图使用的算法，默认为undefined，view_name表示要创建的视图名称，select_statement表示用于创建视图的SELECT查询语句。
 
-
+```
 
 **3、ALTER**
+
+    # (1)删除字段:
+        ALTER TABLE student  DROP age;
+        ALTER TABLE student  MODIFY age CHAR(100);
+        ALTER TABLE student CHANGE id  stu_id BIGINT PRIMARY KEY;  #在 CHANGE 关键字之后，紧跟要修改的字段名，然后指定新字段的类型及名称
+        ALTER TABLE student ALTER sex DROP DEFAULT;  #使用 ALTER 命令及 DROP子句来删除字段的默认值
+    
+    # (2)添加字段：
+        ALTER TABLE tab_name ADD field type (first/before field1);
+
+    # (3)修改字段：
+        # 修改字段类型(修改字段相对位置)   [modify]
+        alter table tab_name modify field type (first/before field1);
+
+        # 修改字段默认值/是否为空/自动增长
+        alter table tab_name modify field type not null/default ="未知"/auto_increment;
+    
+        # 修改字段名/字段类型!   [change]
+        alter table tab_name change field  newfield newtype;
+
+    # (4)修改表名:
+        ALTER TABLE student RENAME TO student_1;
+    
+    # (5)添加与删除主键：
+        alter table tab_name add primary key(field);
+        alter table tab_name drop primary key;
+
+    # (6)添加与删除外键约束:
+        # 给tab_name 中的 field列添加名为fk_name的约束绑定 x表中的主键i
+        alter table tab_name add constraint fk_name foreign key(field) references x(i);
+
+        alter table tab_name drop foreign key fk_name;
+        alter table tab_name drop index  index_name;
+    
+    # (7) 设置约束与默认值:
+        # 设置唯一约束
+        alter table tab_name add constraint uq_name unique(field);
+        
+        # 删除唯一约束
+        alter table tab_name drop index uq_name;
+
+        # 设置默认值
+        alter table tab_name field set default "默认";
+        
+        # 删除默认值
+        alter table tab_name field drop default;
+
+    # (8) 修改数据库表存储引擎:
+        alter table altertable engine = myisam;
+
+    # (9) 查看表状态(引擎):
+        show table status; 
+        show create table tab_name;
 
 **4、DROP**
 ##2.2、DQL（数据查询语言）
@@ -109,6 +179,7 @@ SQL语言通常分为五类：
 
 #3、参考链接
 
-[1] CSDN：SQL语言的分类（https://blog.csdn.net/zhanghuiqi205/article/details/124930881）
-[2] CSDN：MySQL基础之DDL命令（https://blog.csdn.net/m0_43405302/article/details/121677165）
-[3] 百度：MySQL的create语句详解（https://baijiahao.baidu.com/s?id=1760939803942190781&wfr=spider&for=pc）
+[1] CSDN：SQL语言的分类(https://blog.csdn.net/zhanghuiqi205/article/details/124930881)
+[2] CSDN：MySQL基础之DDL命令(https://blog.csdn.net/m0_43405302/article/details/121677165)
+[3] 百度：MySQL的create语句详解(https://baijiahao.baidu.com/s?id=1760939803942190781&wfr=spider&for=pc)
+[4] CSDN: Mysql中的alter命令大全(https://blog.csdn.net/weixin_52345071/article/details/129815543)
