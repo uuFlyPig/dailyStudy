@@ -58,6 +58,10 @@ SQL语言通常分为五类：
 # (4)查询数据库的创建表语句:
     SHOW CREATE DATABASE mysql;
 # 语法：SHOW CREATE DATABASE 数据库名称;
+
+# (5) 查看表状态(引擎):
+    SHOW table status;
+    SHOW create table tab_name;
 ```
    
     
@@ -110,62 +114,108 @@ SQL语言通常分为五类：
 
 **3、ALTER**
 
-    # (1)删除字段:
-        ALTER TABLE student  DROP age;
-        ALTER TABLE student  MODIFY age CHAR(100);
-        ALTER TABLE student CHANGE id  stu_id BIGINT PRIMARY KEY;  #在 CHANGE 关键字之后，紧跟要修改的字段名，然后指定新字段的类型及名称
-        ALTER TABLE student ALTER sex DROP DEFAULT;  #使用 ALTER 命令及 DROP子句来删除字段的默认值
+```mysql
+# (1)删除字段:
+    ALTER TABLE student  DROP age;
+    ALTER TABLE student  MODIFY age CHAR(100);
+    ALTER TABLE student CHANGE id  stu_id BIGINT PRIMARY KEY;  #在 CHANGE 关键字之后，紧跟要修改的字段名，然后指定新字段的类型及名称
+    ALTER TABLE student ALTER sex DROP DEFAULT;  #使用 ALTER 命令及 DROP子句来删除字段的默认值
+
+# (2)添加字段：
+    ALTER TABLE tab_name ADD field type (first/before field1);
+
+# (3)修改字段：
+    # 修改字段类型(修改字段相对位置)   [modify]
+    alter table tab_name modify field type (first/before field1);
+
+    # 修改字段默认值/是否为空/自动增长
+    alter table tab_name modify field type not null/default ="未知"/auto_increment;
+
+    # 修改字段名/字段类型!   [change]
+    alter table tab_name change field  newfield newtype;
+
+# (4)修改表名:
+    ALTER TABLE student RENAME TO student_1;
+
+# (5)添加与删除主键：
+    alter table tab_name add primary key(field);
+    alter table tab_name drop primary key;
+
+# (6)添加与删除外键约束:
+    # 给tab_name 中的 field列添加名为fk_name的约束绑定 x表中的主键i
+    alter table tab_name add constraint fk_name foreign key(field) references x(i);
+
+    alter table tab_name drop foreign key fk_name;
+    alter table tab_name drop index  index_name;
+
+# (7) 设置约束与默认值:
+    # 设置唯一约束
+    alter table tab_name add constraint uq_name unique(field);
     
-    # (2)添加字段：
-        ALTER TABLE tab_name ADD field type (first/before field1);
+    # 删除唯一约束
+    alter table tab_name drop index uq_name;
 
-    # (3)修改字段：
-        # 修改字段类型(修改字段相对位置)   [modify]
-        alter table tab_name modify field type (first/before field1);
-
-        # 修改字段默认值/是否为空/自动增长
-        alter table tab_name modify field type not null/default ="未知"/auto_increment;
+    # 设置默认值
+    alter table tab_name field set default "默认";
     
-        # 修改字段名/字段类型!   [change]
-        alter table tab_name change field  newfield newtype;
+    # 删除默认值
+    alter table tab_name field drop default;
 
-    # (4)修改表名:
-        ALTER TABLE student RENAME TO student_1;
-    
-    # (5)添加与删除主键：
-        alter table tab_name add primary key(field);
-        alter table tab_name drop primary key;
+# (8) 修改数据库表存储引擎:
+    alter table altertable engine = myisam;
 
-    # (6)添加与删除外键约束:
-        # 给tab_name 中的 field列添加名为fk_name的约束绑定 x表中的主键i
-        alter table tab_name add constraint fk_name foreign key(field) references x(i);
-
-        alter table tab_name drop foreign key fk_name;
-        alter table tab_name drop index  index_name;
-    
-    # (7) 设置约束与默认值:
-        # 设置唯一约束
-        alter table tab_name add constraint uq_name unique(field);
-        
-        # 删除唯一约束
-        alter table tab_name drop index uq_name;
-
-        # 设置默认值
-        alter table tab_name field set default "默认";
-        
-        # 删除默认值
-        alter table tab_name field drop default;
-
-    # (8) 修改数据库表存储引擎:
-        alter table altertable engine = myisam;
-
-    # (9) 查看表状态(引擎):
-        show table status; 
-        show create table tab_name;
+```
 
 **4、DROP**
+
+```mysql
+# (1) 删除数据库：
+    DROP DATABASE [IF EXISTS] database_name;
+    
+# (2) 删除数据表及其数据和表结构：
+    DROP TABLE [IF EXISTS] table_name;
+    
+# (3) 删除视图：
+    DROP VIEW [IF EXISTS] view_name;
+    
+# (4) 删除函数：
+    DROP FUNCTION [IF EXISTS] function_name;
+    
+# (5) 删除存储过程：
+    DROP PROCEDURE [IF EXISTS] procedure_name;
+
+# (6) 删除触发器:
+    DROP TRIGGER [IF EXISTS] trigger_name;
+    
+```
+
+
 ##2.2、DQL（数据查询语言）
 
+**1、SELECT**
+
+```mysql
+# (1) 基本查询语句
+    SELECT '任何值'; #仅限mysql
+    SELECT * FROM TABLE;
+    SELECT a,b FROM TABLE;
+    SELECT A AS '别名' FROM TABLE;
+
+# (2) DISTINCT去重：
+    SELECT DISTINCT department_id FROM employees;
+    
+# (3) 全套关键字查询语句：
+    SELECT
+        *
+    FROM TABLE
+    WHERE A = '1'
+    GROUP BY A
+    HAVING COUNT(*) >= 3
+    ORDER BY A ASC
+    LIMIT 100;
+    
+# (4)SELECT的查询还有多表查询、单行函数使用、聚合函数的使用、窗口函数查询、子查询、关联查询等等--后续再补充
+```
 
 ##2.3、DML（数据控制语言）
 
@@ -183,3 +233,4 @@ SQL语言通常分为五类：
 [2] CSDN：MySQL基础之DDL命令(https://blog.csdn.net/m0_43405302/article/details/121677165)
 [3] 百度：MySQL的create语句详解(https://baijiahao.baidu.com/s?id=1760939803942190781&wfr=spider&for=pc)
 [4] CSDN: Mysql中的alter命令大全(https://blog.csdn.net/weixin_52345071/article/details/129815543)
+[5] HTML: MySQL Drop操作详解(https://www.python100.com/html/P912URT0E78N.html)

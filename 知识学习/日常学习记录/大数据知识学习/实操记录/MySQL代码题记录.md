@@ -818,3 +818,64 @@ group by buyer_id
 
 ----
 
+####16、部门工资最高的员工
+
+**题目简介：**
+
+```sql
+编写SQL查询以查找每个部门中薪资最高的员工。（一个部门中最高工资的可有多个）
+```
+
+**示例：**
+
+输入：<font color = green>Employee表</font>
+
+| id  | name  | salary | departmentId |
+|-----|-------|--------|--------------|
+| 1   | Joe   | 70000  | 1            |
+| 2   | Jim   | 90000  | 1            |
+| 3   | Henry | 80000  | 2            |
+| 4   | San   | 60000  | 2            |
+| 5   | Max   | 90000  | 1            |
+
+<font color = green>Department表</font>
+
+| id  | name  |
+|-----|-------|
+| 1   | IT    |
+| 2   | Sales |
+
+<font color= #871F78>输出：<font>
+
+| Department | Employee | Salary |
+|------------|----------|--------|
+| IT         | Jim      | 90000  |
+| Sales      | Henry    | 80000  |
+| IT         | Max      | 90000  |
+
+
+**思路简介：**
+
+```sql
+员工表与部门表关联后，通过窗口函数，对同一个部门的员工开一个窗口，并且以薪水排序，给出排好的顺序，然后取第一即可
+题目中说一个部门最高工可有多个，因此使用RANK()窗口函数排序。
+```
+
+**实现代码：**
+
+```sql
+select
+    Department,Employee,Salary
+from (
+         SELECT e.Employee,
+                e.Salary,
+                d.Department,
+                RANK() OVER(PARTITION BY Department order by Salary) as rk
+         FROM Employee as e
+                  left join Department as d on e.Employee = d.Employee
+     )AS temp
+where temp.rk = 1;
+```
+
+----
+
