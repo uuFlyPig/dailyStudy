@@ -1,4 +1,4 @@
-_**本文记录SQL程序语言的一些语句操作，代码示例，通过此文可以快速回忆SQL的写法，摘抄于网上资料，来源链接见文末**_
+_____**本文记录SQL程序语言的一些语句操作，代码示例，通过此文可以快速回忆SQL的写法，摘抄于网上资料，来源链接见文末**_
 
 
 #1、SQL语言程序简介
@@ -186,9 +186,16 @@ SQL语言通常分为五类：
 
 # (6) 删除触发器:
     DROP TRIGGER [IF EXISTS] trigger_name;
-    
+
 ```
 
+**5、TRUNCATE**
+
+```mysql
+# 清空表，不删除表结构L:
+    TRUNCATE TABLE TABLENAME #或者
+    TRUNCATE TABLENAME
+```
 
 ##2.2、DQL（数据查询语言）
 
@@ -214,10 +221,45 @@ SQL语言通常分为五类：
     ORDER BY A ASC
     LIMIT 100;
     
-# (4)SELECT的查询还有多表查询、单行函数使用、聚合函数的使用、窗口函数查询、子查询、关联查询等等--后续再补充
+# (4) SELECT的查询还有多表查询、单行函数使用、聚合函数的使用、窗口函数查询、子查询、关联查询等等--后续再补充
 ```
 
 ##2.3、DML（数据控制语言）
+
+**1、INSERT**
+
+```mysql
+# (1) 插入数据，可单行可多行：
+	INSERT INTO TABLE_NAME [(value1, value2, value3, ...)] VALUES (data1, data2, data3, ...),(data1, data2, data3, ...) ...
+	
+	/*
+		注意:
+
+			1、表的字段是可选的，入锅省略，则依次插入所有的字段。
+
+			2、如果插入的是表中部分列的数据，字段名列表必须填写。
+
+			3、多个字段和多个值之间使用逗号隔开。
+
+			4、值列表必须和字段名列表数量相同且数据类型相符（字符串和日期类型的值要加单引号）。
+
+			5、值列表中的数据必须符合数据完整性的要求。
+	*/
+
+# (2) INSERT IGNORE INTO
+	INSERT IGNORE INTO TABLE_NAME [(value1, value2, value3, ...)] VALUES (data1, data2, data3, ...),(data1, data2, data3, ...) ...
+	#当插入新数据时，MySQL数据库会首先检索已有数据，如果存在，则忽略本次插入，如果不存在，则插入
+	
+# (3) ON DUPLICATE KEY UPDATE
+	INSERT INTO person(pName,id_card,salary,summary) VALUES ('张无忌', '110101199003077417', '888.99', '武学大才') on duplicate key update salary=3333,summary='武学巅峰';
+    #插入数据时，如果数据存在，则执行on update后更新操作，如果不存在，则直接插入，注意更新的数据是 on duplicate key update 关键字后面的字段。
+
+# (4) REPLACE INTO :
+    REPLACE INTO TABLE_NAME [(value1, value2, value3, ...)] VALUES (data1, data2, data3, ...)
+    #	插入数据时，如果数据存在，则删除后再插入，如果不存在，则直接插入
+```
+
+**2、UPDATE**
 
 
 ##2.4、TCL（事务控制语言）
@@ -234,3 +276,4 @@ SQL语言通常分为五类：
 [3] 百度：MySQL的create语句详解(https://baijiahao.baidu.com/s?id=1760939803942190781&wfr=spider&for=pc)
 [4] CSDN: Mysql中的alter命令大全(https://blog.csdn.net/weixin_52345071/article/details/129815543)
 [5] HTML: MySQL Drop操作详解(https://www.python100.com/html/P912URT0E78N.html)
+[6] CSDN: mysql基本语句：DML（数据操作语言）(https://blog.csdn.net/qi341500/article/details/126594024)____

@@ -879,3 +879,106 @@ where temp.rk = 1;
 
 ----
 
+####17、重新格式化部门表
+
+**题目简介：**
+
+```sql
+编写一个 SQL 查询来重新格式化表，使得新的表中有一个部门 id 列和一些对应 每个月 的收入（revenue）列
+```
+
+**示例：**
+
+输入：<font color = green>Department表</font>
+
+| id  | revenue | month |
+|-----|---------|-------|
+| 1   | 8000    | Jan   |
+| 2   | 9000    | Jan   |
+| 3   | 10000   | Feb   |
+| 1   | 7000    | Feb   |
+| 1   | 6000    | Mar   |
+
+<font color= #871F78>输出：<font>
+
+| id  | Jan_Revenue | Feb_Revenue | Mar_Revenue | ··· | Dec_Revenue |
+|-----|-------------|-------------|-------------|-----|-------------|
+| 1   | 8000        | 7000        | 6000        | ··· | null        |
+| 2   | 9000        | null        | null        | ··· | null        |
+| 3   | null        | 10000       | null        | ··· | null        |
+
+
+**思路简介：**
+
+```sql
+行转列，将行的数据转成列数据，使用case when then ，将month作为判断条件，选取数据。
+```
+
+**实现代码：**
+
+```sql
+select 
+     id
+    , sum(case `month` when 'Jan' then revenue else null end) as Jan_Revenue
+    , sum(case `month` when 'Feb' then revenue else null end) as Feb_Revenue
+    , sum(case `month` when 'Mar' then revenue else null end) as Mar_Revenue
+    , sum(case `month` when 'Apr' then revenue else null end) as Apr_Revenue
+    , sum(case `month` when 'May' then revenue else null end) as May_Revenue
+    , sum(case `month` when 'Jun' then revenue else null end) as Jun_Revenue
+    , sum(case `month` when 'Jul' then revenue else null end) as Jul_Revenue
+    , sum(case `month` when 'Aug' then revenue else null end) as Aug_Revenue
+    , sum(case `month` when 'Sep' then revenue else null end) as Sep_Revenue
+    , sum(case `month` when 'Oct' then revenue else null end) as Oct_Revenue
+    , sum(case `month` when 'Nov' then revenue else null end) as Nov_Revenue
+    , sum(case `month` when 'Dec' then revenue else null end) as Dec_Revenue
+from Department group by id
+
+```
+
+----
+
+####18、计算用户的平均次日留存率
+
+**题目简介：**
+
+```sql
+现在运营想要查看用户在某天刷题后第二天还会再来刷题的平均概率。请你取出相应数据
+题目分析：
+所谓次日留存，指的是同一用户（在本题中则为同一设备，即device_id）在当天和第二天都进行刷题。注意，在这题我们不关心同一用户（设备）在这天答了什么题、答题结果如何，只关心他是否答题，因此对于这题来说存在重复的数据（如下图红框所示），需要使用 DISTINCT 去重。
+```
+
+**示例：**
+
+输入：<font color = green>question_practice_detail表</font>
+
+| id  | device_id | quest_id | result | date       |
+|-----|-----------|----------|--------|------------|
+| 1   | 2138      | 111      | wrong  | 2021-05-03 |
+| 2   | 3214      | 112      | wrong  | 2021-05-09 |
+| 3   | 3214      | 113      | wrong  | 2021-06-15 |
+| 4   | 6543      | 111      | right  | 2021-08-13 |
+| 5   | 2315      | 115      | right  | 2021-08-13 |
+| 6   | 2315      | 116      | right  | 2021-08-14 |
+| 7   | 2315      | 117      | wrong  | 2021-08-15 |
+
+<font color= #871F78>输出：<font>
+
+| avg_ret |
+|---------|
+| 0.3000  |
+
+**思路简介：**
+
+```sql
+
+```
+
+**实现代码：**
+
+```sql
+
+
+```
+
+----
+
