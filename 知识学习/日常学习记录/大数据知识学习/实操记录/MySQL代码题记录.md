@@ -982,3 +982,46 @@ from Department group by id
 
 ----
 
+####19、统计每种性别的人数
+
+**题目简介：**
+
+```sql
+统计下表中每个性别的用户分别有多少参赛者，请取出相应结果
+```
+
+**示例：**
+
+输入：<font color = green>user_submit表</font>
+
+| device_id | profile              | blog_url            |
+|-----------|----------------------|---------------------|
+| 2138      | 180cm,75kg,27,male   | http:/url/bigboy777 |
+| 3214      | 165cm,45kg,26,female | http:/url/kittycc   |
+| 6543      | 178cm,65kg,25,male   | http:/url/tiger     |
+| 4321      | 171cm,55kg,23,female | http:/url/uhksd     |
+| 2131      | 168cm,45kg,22,female | http:/urlsydney     |
+
+<font color= #871F78>输出：<font>
+
+| gender | number |
+|--------|--------|
+| male   | 2      |
+| female | 3      |
+
+
+**思路简介：**
+
+```sql
+
+```
+
+**实现代码：**
+
+```sql
+
+
+```
+
+----
+
