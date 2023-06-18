@@ -262,7 +262,18 @@ SQL语言通常分为五类：
 **2、UPDATE**
 
 ```mysql
+# (1) 更新字段值
+    UPDATE table SET column1 = value1, column2 = value2, ... WHERE condition;
+    #注意：更新表中的记录时要小心！ 注意 UPDATE 语句中的 WHERE 子句。 WHERE 子句指定应该更新哪些记录。 如果省略WHERE子句，表中的所有记录都会更新！
+    
+# (2) mysql数据库update更新表中某个字段的值为另一张表的某个字段值  
+    UPDATE table1 a LEFT JOIN table2 b ON a.idd= b.idd SET a.val = b.val WHERE a.idd=b.idd;
 
+# (3) mysql查询出一张表的数据值去更新另一张表的数据值
+    UPDATE table1 SET val=(SELECT val FROM table2 WHERE idd=‘01’) WHERE idd=‘03’
+
+# (4) 对某些字段变量+1，常见的如：点击率、下载次数等这种直接将字段+1然后赋值给自身
+    UPDATE table1 SET val=val+1 WHERE idd=‘06’
 
 ```
 
