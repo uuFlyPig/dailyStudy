@@ -971,6 +971,9 @@ from Department group by id
 
 ```sql
 
+
+
+
 ```
 
 **实现代码：**
@@ -1009,6 +1012,51 @@ from Department group by id
 | male   | 2      |
 | female | 3      |
 
+
+**思路简介：**
+
+```sql
+
+```
+
+**实现代码：**
+
+```sql
+
+
+```
+
+----
+
+####20、mysql将一行拆成多行
+
+**题目简介：**
+
+```sql
+
+```
+
+**示例：**
+
+输入：<font color = green>Employees表</font>
+
+| employee_id | name    | salary |
+|-------------|---------|--------|
+| 2           | Meir    | 3000   |
+| 3           | Michael | 3800   |
+| 7           | Addilyn | 7400   |
+| 8           | Juan    | 6100   |
+| 9           | Kannon  | 7700   |
+
+<font color= #871F78>输出：<font>
+
+| employee_id | bonus |
+|-------------|-------|
+| 2           | 0     |
+| 3           | 0     |
+| 7           | 7400  |
+| 8           | 0     |
+| 9           | 7700  |
 
 **思路简介：**
 
