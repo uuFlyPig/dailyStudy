@@ -279,16 +279,97 @@ SQL语言通常分为五类：
 
 ##2.4、TCL（事务控制语言）
 
+```mysql
+# (1) 开启事务
+    begin;
+    #或 
+    start transaction;
+    
+# (2) 事务提交
+    commit [work];
+    
+# (3) 回滚
+    rollback [work];
+    
+# (4) 保存点设置
+    savepoint 标识;
+
+# (5) 回滚到保存点
+    rollback to [savepoint] 标识;
+    
+# (6) 删除保存点
+    release savepoint 标识;
+
+```
+
+# 示例
+```mysql
+    begin;
+
+    insert into testtcl values(47, 's');
+
+    savepoint a;
+
+    insert into testtcl values(48, 's');
+    
+    savepoint b;
+    
+    insert into testtcl values(49, 's');
+    
+    rollback to a;
+```
 
 ##2.5、DCL（数据控制语言）
 
+```mysql
+# (1) 创建用户
+    create user '用户名'@'主机名' identified by '密码';
+
+# (2) 修改用户密码
+    alter user '用户名'@'主机名' identified with mysql_native_password by '新密码';
+
+# (3) 修改用户密码
+    alter user '用户名'@'主机名' identified with mysql_native_password by '新密码';
+
+# (4) 删除用户 
+    drop user '用户名'@'主机名';
+
+# (5) 查询权限
+    show grants for '用户名'@'主机名';
+
+# (6) 授予权限 
+    grant 权限列表 on 数据库名.表名 to '用户名'@'主机名';
+```
+
+常用的权限有以下几种：
+
+| 权限                   | 说明             | 
+|----------------------|----------------|
+| ALL, ALL PRIVILEGES  | 所有权限           |
+| SELECT               | 查询数据           |
+| INSERT               | 插入数据           |
+| UPDATE               | 修改数据           | 
+| DELETE               | 删除数据           | 
+| ALTER                | 修改表            |
+| DROP                 | 删除数据库 / 表 / 视图 |
+| CREATE               | 创建数据库/表        |
 
 
 #3、参考链接
 
 [1] CSDN：SQL语言的分类(https://blog.csdn.net/zhanghuiqi205/article/details/124930881)
+
 [2] CSDN：MySQL基础之DDL命令(https://blog.csdn.net/m0_43405302/article/details/121677165)
+
 [3] 百度：MySQL的create语句详解(https://baijiahao.baidu.com/s?id=1760939803942190781&wfr=spider&for=pc)
+
 [4] CSDN: Mysql中的alter命令大全(https://blog.csdn.net/weixin_52345071/article/details/129815543)
+
 [5] HTML: MySQL Drop操作详解(https://www.python100.com/html/P912URT0E78N.html)
-[6] CSDN: mysql基本语句：DML（数据操作语言）(https://blog.csdn.net/qi341500/article/details/126594024)____
+
+[6] CSDN: mysql基本语句：DML（数据操作语言）(https://blog.csdn.net/qi341500/article/details/126594024)
+
+[7] CSDN: TCL——事务控制语言(https://blog.csdn.net/qq_40678222/article/details/113777410)
+
+[8] CSDN: DCL——数据控制语言(https://blog.csdn.net/Inneverleft/article/details/127171303)
+
